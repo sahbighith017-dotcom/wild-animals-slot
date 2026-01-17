@@ -3,184 +3,132 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Wild Animals Slot</title>
+<title>Wild Animals Slot PRO</title>
 
 <style>
 body {
   margin: 0;
-  background: radial-gradient(circle at top, #1b3a2a, #000);
+  height: 100vh;
+  background: radial-gradient(circle at top, #1a2a3a, #000);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-family: Arial, sans-serif;
   color: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
 }
 
-.game {
+.slot-box {
   width: 360px;
-  background: #0b1f16;
+  background: #111;
   border-radius: 20px;
-  padding: 15px;
-  box-shadow: 0 0 25px #000;
+  padding: 20px;
+  box-shadow: 0 0 40px rgba(0,255,150,.3);
   text-align: center;
 }
 
 h1 {
-  margin: 5px 0 15px;
-  color: #f5c542;
+  margin-bottom: 15px;
 }
 
 .reels {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 15px;
+  margin: 20px 0;
 }
 
 .reel {
-  width: 100px;
-  height: 100px;
+  width: 90px;
+  height: 90px;
   background: #000;
-  border-radius: 12px;
-  overflow: hidden;
-  border: 2px solid #f5c542;
-}
-
-.reel img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.info {
+  border-radius: 15px;
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  font-size: 14px;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  box-shadow: inset 0 0 10px #0f0;
+  transition: transform .3s;
+}
+
+.spin {
+  animation: spin .3s linear infinite;
+}
+
+@keyframes spin {
+  0% {transform: translateY(0)}
+  100% {transform: translateY(-20px)}
 }
 
 button {
   width: 100%;
-  padding: 12px;
-  font-size: 18px;
+  padding: 15px;
+  font-size: 20px;
   border: none;
-  border-radius: 12px;
-  background: linear-gradient(45deg, #f5c542, #ff9800);
-  color: #000;
-  font-weight: bold;
+  border-radius: 15px;
+  background: linear-gradient(45deg,#00ff99,#00ccff);
   cursor: pointer;
+  font-weight: bold;
 }
 
 button:active {
-  transform: scale(0.97);
+  transform: scale(.97);
 }
 
-.message {
-  margin-top: 10px;
-  min-height: 20px;
-  color: #7CFC00;
-  font-weight: bold;
+#result {
+  margin-top: 15px;
+  font-size: 18px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="game">
-  <h1>🐾 Wild Animals Slot</h1>
+<div class="slot-box">
+  <h1>🐯 Wild Animals Slot</h1>
 
   <div class="reels">
-    <div class="reel"><img id="r1"></div>
-    <div class="reel"><img id="r2"></div>
-    <div class="reel"><img id="r3"></div>
-  </div>
-
-  <div class="info">
-    <div>💰 الرصيد: <span id="balance">1000</span></div>
-    <div>🎁 Free Spins: <span id="free">0</span></div>
+    <div class="reel" id="r1">🦁</div>
+    <div class="reel" id="r2">🐯</div>
+    <div class="reel" id="r3">🐵</div>
   </div>
 
   <button onclick="spin()">SPIN</button>
-  <div class="message" id="msg"></div>
+  <div id="result"></div>
 </div>
 
 <script>
-// 🎯 إعدادات
-let balance = 1000;
-let bet = 50;
-let freeSpins = 0;
+const animals = ["🦁","🐯","🐵","🐼","🐸","🦊"];
 
-// 🐅 صور حيوانات واقعية
-const animals = [
-  "https://images.unsplash.com/photo-1614027164847-1b28cfe1df60", // lion
-  "https://images.unsplash.com/photo-1546182990-dffeafbe841d", // tiger
-  "https://images.unsplash.com/photo-1508672019048-805c876b67e2", // zebra
-  "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee", // elephant
-  "https://images.unsplash.com/photo-1547721064-da6cfb341d50"  // leopard
-];
+function spin() {
+  const r1 = document.getElementById("r1");
+  const r2 = document.getElementById("r2");
+  const r3 = document.getElementById("r3");
+  const result = document.getElementById("result");
 
-// 🔊 صوت بسيط
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-function playSound(freq, time){
-  const osc = audioCtx.createOscillator();
-  osc.frequency.value = freq;
-  osc.connect(audioCtx.destination);
-  osc.start();
-  osc.stop(audioCtx.currentTime + time);
+  r1.classList.add("spin");
+  r2.classList.add("spin");
+  r3.classList.add("spin");
+  result.innerText = "";
+
+  setTimeout(() => {
+    r1.classList.remove("spin");
+    r2.classList.remove("spin");
+    r3.classList.remove("spin");
+
+    const a = animals[Math.floor(Math.random()*animals.length)];
+    const b = animals[Math.floor(Math.random()*animals.length)];
+    const c = animals[Math.floor(Math.random()*animals.length)];
+
+    r1.innerText = a;
+    r2.innerText = b;
+    r3.innerText = c;
+
+    if (a === b && b === c) {
+      result.innerText = "🎉 JACKPOT! 🎉";
+    } else {
+      result.innerText = "❌ Try Again";
+    }
+  }, 900);
 }
-
-// 🎰 Spin
-function spin(){
-  if(balance < bet && freeSpins === 0){
-    msg("❌ رصيد غير كافٍ");
-    return;
-  }
-
-  if(freeSpins === 0){
-    balance -= bet;
-  } else {
-    freeSpins--;
-  }
-
-  playSound(300, 0.1);
-
-  let r = [];
-  for(let i=1;i<=3;i++){
-    let img = animals[Math.floor(Math.random()*animals.length)];
-    document.getElementById("r"+i).src = img;
-    r.push(img);
-  }
-
-  // 🎯 RTP / الفوز
-  if(r[0] === r[1] && r[1] === r[2]){
-    let win = bet * 5;
-    balance += win;
-    freeSpins += 2;
-    playSound(700, 0.2);
-    msg("🎉 فوز كبير! +" + win + " 🎁 +2 Free Spins");
-  } else if(r[0] === r[1] || r[1] === r[2]){
-    let win = bet * 2;
-    balance += win;
-    msg("✨ فوز! +" + win);
-  } else {
-    msg("🔄 حاول مرة أخرى");
-  }
-
-  updateUI();
-}
-
-function updateUI(){
-  document.getElementById("balance").innerText = balance;
-  document.getElementById("free").innerText = freeSpins;
-}
-
-function msg(t){
-  document.getElementById("msg").innerText = t;
-}
-
-// تحميل أولي
-updateUI();
-spin();
 </script>
 
 </body>
