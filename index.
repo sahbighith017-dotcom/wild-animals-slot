@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wild Animals Slot</title>
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:#0b0f14;
+  font-family:Arial, sans-serif;
+}
+
+.game{
+  background:#151b23;
+  padding:20px;
+  border-radius:20px;
+  width:320px;
+  text-align:center;
+  box-shadow:0 20px 40px rgba(0,0,0,.6);
+  color:#fff;
+}
+
+h1{
+  margin-bottom:20px;
+}
+
+.slots{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:20px;
+}
+
+.slot{
+  width:90px;
+  height:90px;
+  background:#000;
+  border-radius:15px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:55px;
+  animation:none;
+}
+
+.spin-btn{
+  width:100%;
+  padding:15px;
+  font-size:18px;
+  font-weight:bold;
+  background:#2ecc71;
+  border:none;
+  border-radius:15px;
+  cursor:pointer;
+}
+
+.spin-btn:active{
+  transform:scale(0.98);
+}
+
+.result{
+  margin-top:15px;
+  font-size:18px;
+  min-height:24px;
+}
+
+@keyframes spin {
+  0%{transform:rotateX(0deg)}
+  100%{transform:rotateX(360deg)}
+}
+</style>
+</head>
+
+<body>
+
+<div class="game">
+  <h1>🐯 Wild Animals Slot</h1>
+
+  <div class="slots">
+    <div class="slot" id="s1">🦁</div>
+    <div class="slot" id="s2">🐯</div>
+    <div class="slot" id="s3">🐵</div>
+  </div>
+
+  <button class="spin-btn" onclick="spin()">SPIN</button>
+
+  <div class="result" id="result"></div>
+</div>
+
+<audio id="spinSound">
+  <source src="https://assets.mixkit.co/sfx/preview/mixkit-slot-machine-spin-1930.mp3">
+</audio>
+
+<audio id="winSound">
+  <source src="https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3">
+</audio>
+
+<script>
+const animals = ["🦁","🐯","🐵","🐼","🐺","🐸"];
+
+function spin(){
+  const spinSound = document.getElementById("spinSound");
+  const winSound  = document.getElementById("winSound");
+
+  spinSound.play();
+
+  document.getElementById("result").textContent="";
+
+  let s1 = document.getElementById("s1");
+  let s2 = document.getElementById("s2");
+  let s3 = document.getElementById("s3");
+
+  s1.style.animation = s2.style.animation = s3.style.animation = "spin .4s linear infinite";
+
+  setTimeout(()=>{
+    let a1 = animals[Math.floor(Math.random()*animals.length)];
+    let a2 = animals[Math.floor(Math.random()*animals.length)];
+    let a3 = animals[Math.floor(Math.random()*animals.length)];
+
+    s1.textContent=a1;
+    s2.textContent=a2;
+    s3.textContent=a3;
+
+    s1.style.animation = s2.style.animation = s3.style.animation = "none";
+
+    if(a1===a2 && a2===a3){
+      winSound.play();
+      document.getElementById("result").textContent="🎉 YOU WIN!";
+    }else{
+      document.getElementById("result").textContent="❌ Try again";
+    }
+  },1200);
+}
+</script>
+
+</body>
+</html>
