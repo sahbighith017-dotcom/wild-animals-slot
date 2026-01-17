@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wild Animals Slot</title>
+<style>
+body{
+  background:#0b0f14;
+  color:#fff;
+  font-family:Arial,sans-serif;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+.game{
+  background:#141a22;
+  padding:20px;
+  border-radius:16px;
+  width:320px;
+  text-align:center;
+  box-shadow:0 0 20px rgba(0,0,0,.6);
+}
+.slots{
+  display:flex;
+  justify-content:space-between;
+  margin:20px 0;
+}
+.slot{
+  width:90px;
+  height:90px;
+  background:#000;
+  border-radius:12px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:48px;
+}
+button{
+  width:100%;
+  padding:12px;
+  font-size:18px;
+  border:none;
+  border-radius:10px;
+  background:#2ecc71;
+  color:#000;
+  font-weight:bold;
+}
+.result{
+  margin-top:12px;
+  font-size:18px;
+}
+</style>
+</head>
+<body>
+
+<div class="game">
+  <h2>🐅 Wild Animals Slot</h2>
+  <div class="slots">
+    <div class="slot" id="s1">🐅</div>
+    <div class="slot" id="s2">🦁</div>
+    <div class="slot" id="s3">🐺</div>
+  </div>
+  <button onclick="spin()">SPIN</button>
+  <div class="result" id="result"></div>
+</div>
+
+<script>
+const animals=["🐅","🦁","🐺","🐻","🐯"];
+
+function spin(){
+  let a1=animals[Math.floor(Math.random()*animals.length)];
+  let a2=animals[Math.floor(Math.random()*animals.length)];
+  let a3=animals[Math.floor(Math.random()*animals.length)];
+
+  s1.textContent=a1;
+  s2.textContent=a2;
+  s3.textContent=a3;
+
+  if(a1===a2 && a2===a3){
+    result.textContent="🎉 WIN!";
+  }else{
+    result.textContent="❌ Try again";
+  }
+}
+</script>
+
+</body>
+</html>
