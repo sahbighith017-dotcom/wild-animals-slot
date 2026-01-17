@@ -1,134 +1,254 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Wild Animals Slot PRO</title>
+<title>Wild Animals Slot</title>
 
 <style>
-body {
-  margin: 0;
-  height: 100vh;
-  background: radial-gradient(circle at top, #1a2a3a, #000);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: Arial, sans-serif;
-  color: #fff;
+body{
+  margin:0;
+  background:radial-gradient(circle at top,#1e4d2b,#081b12);
+  font-family:'Segoe UI',sans-serif;
 }
-
-.slot-box {
-  width: 360px;
-  background: #111;
-  border-radius: 20px;
-  padding: 20px;
-  box-shadow: 0 0 40px rgba(0,255,150,.3);
-  text-align: center;
+.game{
+  max-width:420px;
+  margin:auto;
+  padding:10px;
 }
-
-h1 {
-  margin-bottom: 15px;
+.top{
+  display:flex;
+  justify-content:space-between;
+  color:#fff;
+  font-size:18px;
+  margin-bottom:8px;
 }
-
-.reels {
-  display: flex;
-  justify-content: space-between;
-  margin: 20px 0;
+.frame{
+  background:linear-gradient(#cfa93a,#7c5b13);
+  border-radius:18px;
+  padding:8px;
+  position:relative;
 }
-
-.reel {
-  width: 90px;
-  height: 90px;
-  background: #000;
-  border-radius: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 48px;
-  box-shadow: inset 0 0 10px #0f0;
-  transition: transform .3s;
+.reels{
+  display:flex;
+  background:#0f3b28;
+  border-radius:14px;
+  overflow:hidden;
 }
-
-.spin {
-  animation: spin .3s linear infinite;
+.reel{
+  flex:1;
+  height:240px;
+  overflow:hidden;
+  position:relative;
 }
-
-@keyframes spin {
-  0% {transform: translateY(0)}
-  100% {transform: translateY(-20px)}
+.strip{
+  position:absolute;
+  width:100%;
 }
-
-button {
-  width: 100%;
-  padding: 15px;
-  font-size: 20px;
-  border: none;
-  border-radius: 15px;
-  background: linear-gradient(45deg,#00ff99,#00ccff);
-  cursor: pointer;
-  font-weight: bold;
+.symbol{
+  height:80px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:42px;
+  background:#134b33;
+  box-shadow:inset 0 0 10px #000;
 }
-
-button:active {
-  transform: scale(.97);
+.payline{
+  position:absolute;
+  top:50%;
+  left:0;
+  right:0;
+  height:3px;
+  background:rgba(255,255,255,.4);
+  box-shadow:0 0 10px gold;
 }
-
-#result {
-  margin-top: 15px;
-  font-size: 18px;
+.panel{
+  margin-top:12px;
+  color:#fff;
+}
+.spin{
+  width:100%;
+  padding:14px;
+  font-size:22px;
+  border:none;
+  border-radius:18px;
+  background:linear-gradient(#ffe066,#f08c00);
+}
+.msg{
+  text-align:center;
+  margin-top:6px;
+  font-size:18px;
+  color:gold;
+}
+.free{
+  color:#00ffd5;
 }
 </style>
 </head>
 
 <body>
 
-<div class="slot-box">
-  <h1>🐯 Wild Animals Slot</h1>
-
-  <div class="reels">
-    <div class="reel" id="r1">🦁</div>
-    <div class="reel" id="r2">🐯</div>
-    <div class="reel" id="r3">🐵</div>
+<div class="game">
+  <div class="top">
+    <div>💰 <span id="balance">5000</span></div>
+    <div>🎯 Bet: <span id="bet">50</span></div>
   </div>
 
-  <button onclick="spin()">SPIN</button>
-  <div id="result"></div>
+  <div class="frame">
+    <div class="reels" id="reels"></div>
+    <div class="payline"></div>
+  </div>
+
+  <div class="panel">
+    <button class="spin" id="spinBtn">SPIN</button>
+    <div class="msg" id="msg"></div>
+    <div class="msg free" id="free"></div>
+  </div>
 </div>
 
+<audio id="spinSound" src="https://assets.mixkit.co/sfx/preview/mixkit-slot-machine-spin-1930.mp3"></audio>
+<audio id="winSound" src="https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3"></audio>
+
 <script>
-const animals = ["🦁","🐯","🐵","🐼","🐸","🦊"];
+/* -------- CONFIG -------- */
+const symbols = ["🦁","🐺","🦅","🐘","🐯","🐾"];
+const weights = {
+  "🦁":6,   // Wild
+  "🐺":10,
+  "🦅":12,
+  "🐘":8,
+  "🐯":9,
+  "🐾":3    // Scatter
+};
 
-function spin() {
-  const r1 = document.getElementById("r1");
-  const r2 = document.getElementById("r2");
-  const r3 = document.getElementById("r3");
-  const result = document.getElementById("result");
+const paytable = {
+  "🦁": {3:5,4:20,5:100},
+  "🐺": {3:3,4:10,5:40},
+  "🦅": {3:3,4:8,5:30},
+  "🐘": {3:4,4:12,5:50},
+  "🐯": {3:4,4:15,5:60}
+};
 
-  r1.classList.add("spin");
-  r2.classList.add("spin");
-  r3.classList.add("spin");
-  result.innerText = "";
+const STRIP_LEN = 40;
+const SYMBOL_H = 80;
 
-  setTimeout(() => {
-    r1.classList.remove("spin");
-    r2.classList.remove("spin");
-    r3.classList.remove("spin");
+/* -------- STATE -------- */
+let balance = 5000;
+let bet = 50;
+let freeSpins = 0;
+let spinning = false;
+const reels = [];
 
-    const a = animals[Math.floor(Math.random()*animals.length)];
-    const b = animals[Math.floor(Math.random()*animals.length)];
-    const c = animals[Math.floor(Math.random()*animals.length)];
-
-    r1.innerText = a;
-    r2.innerText = b;
-    r3.innerText = c;
-
-    if (a === b && b === c) {
-      result.innerText = "🎉 JACKPOT! 🎉";
-    } else {
-      result.innerText = "❌ Try Again";
-    }
-  }, 900);
+/* -------- INIT -------- */
+const reelsEl = document.getElementById("reels");
+for(let i=0;i<5;i++){
+  const r = document.createElement("div");
+  r.className="reel";
+  const s = document.createElement("div");
+  s.className="strip";
+  r.appendChild(s);
+  reelsEl.appendChild(r);
+  reels.push(s);
 }
+
+const spinSound = document.getElementById("spinSound");
+const winSound = document.getElementById("winSound");
+
+/* -------- RANDOM -------- */
+function weightedRandom(){
+  let total=0;
+  for(let w of Object.values(weights)) total+=w;
+  let r=Math.random()*total;
+  for(let k in weights){
+    if(r<weights[k]) return k;
+    r-=weights[k];
+  }
+}
+
+/* -------- SPIN -------- */
+document.getElementById("spinBtn").onclick=spin;
+
+function spin(){
+  if(spinning) return;
+  if(freeSpins===0 && balance<bet) return alert("الرصيد غير كافٍ");
+
+  spinning=true;
+  document.getElementById("spinBtn").disabled=true;
+
+  if(freeSpins>0){
+    freeSpins--;
+  }else{
+    balance-=bet;
+  }
+
+  updateUI();
+  spinSound.currentTime=0;
+  spinSound.play();
+
+  const result=[];
+  for(let i=0;i<5;i++) result.push(weightedRandom());
+
+  reels.forEach((strip,i)=>{
+    strip.innerHTML="";
+    const stop=Math.floor(STRIP_LEN/2);
+    for(let j=0;j<STRIP_LEN;j++){
+      const d=document.createElement("div");
+      d.className="symbol";
+      d.textContent = (j===stop)?result[i]:weightedRandom();
+      strip.appendChild(d);
+    }
+    strip.style.transition="none";
+    strip.style.top="0px";
+    setTimeout(()=>{
+      strip.style.transition=`top ${1.2+i*0.15}s cubic-bezier(.16,.8,.28,1)`;
+      strip.style.top=-(stop*SYMBOL_H)+"px";
+    },i*120);
+  });
+
+  setTimeout(()=>{
+    checkWin(result);
+    spinning=false;
+    document.getElementById("spinBtn").disabled=false;
+  },2200);
+}
+
+/* -------- WIN -------- */
+function checkWin(r){
+  let count=1;
+  for(let i=1;i<r.length;i++){
+    if(r[i]===r[0]||r[i]==="🦁") count++;
+    else break;
+  }
+
+  let win=0;
+  if(paytable[r[0]] && paytable[r[0]][count]){
+    win=bet*paytable[r[0]][count];
+    balance+=win;
+    winSound.play();
+    msg("🎉 فزت: "+win);
+  }else{
+    msg("❌ لا فوز");
+  }
+
+  const scat=r.filter(x=>x==="🐾").length;
+  if(scat>=3){
+    freeSpins+=10;
+    msg("🎁 Free Spins +10");
+    winSound.play();
+  }
+
+  updateUI();
+}
+
+/* -------- UI -------- */
+function updateUI(){
+  balanceEl.textContent=balance;
+  free.textContent=freeSpins>0?`🎁 Free Spins: ${freeSpins}`:"";
+}
+function msg(t){document.getElementById("msg").textContent=t;}
+
+const balanceEl=document.getElementById("balance");
+const free=document.getElementById("free");
 </script>
 
 </body>
